@@ -3,60 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أحبك يا نونتي ❤️</title>
+    <title>إلى أميرتي نونتي ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Amiri:ital,wght@1,700&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #0b090a; color: white; font-family: 'Segoe UI', Tahoma, sans-serif; text-align: center; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
-        .card { background: rgba(255, 255, 255, 0.1); padding: 40px; border-radius: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); width: 85%; max-width: 400px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); transition: 0.5s; position: relative; z-index: 10; }
-        h2 { color: #ff4d6d; }
-        input { padding: 12px; border-radius: 10px; border: none; margin-top: 15px; width: 90%; text-align: center; font-size: 16px; outline: none; background: white; color: black; }
-        button { margin-top: 20px; padding: 12px 40px; border-radius: 10px; background: #ff4d6d; color: white; border: none; cursor: pointer; font-weight: bold; font-size: 18px; transition: 0.3s; }
-        button:hover { background: #ff758f; transform: scale(1.05); }
-        #message { display: none; opacity: 0; transition: 1s; }
-        .heart { position: absolute; color: #ff4d6d; font-size: 20px; z-index: 1; animation: fall linear infinite; }
-        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+        :root { --p: #ff4d6d; --bg: #0b090a; }
+        body { margin: 0; background: var(--bg); color: white; font-family: 'Cairo', sans-serif; overflow-x: hidden; text-align: center; }
+        
+        /* شاشة القفل الزجاجية */
+        #lock { 
+            position: fixed; inset: 0; background: radial-gradient(circle, #1a1a1a, #000);
+            display: flex; align-items: center; justify-content: center; z-index: 1000; transition: 1.5s;
+        }
+        .login-card { 
+            background: rgba(255, 255, 255, 0.05); padding: 40px; border-radius: 30px;
+            backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); width: 85%; max-width: 400px;
+        }
+        input { 
+            padding: 15px; border-radius: 12px; border: none; width: 80%; 
+            margin: 20px 0; text-align: center; font-size: 18px; background: rgba(255,255,255,0.9); color: #000;
+        }
+        button { 
+            padding: 12px 40px; border-radius: 12px; background: var(--p); 
+            color: white; border: none; cursor: pointer; font-weight: bold; transition: 0.3s;
+        }
+        button:hover { transform: scale(1.1); box-shadow: 0 0 20px var(--p); }
+
+        /* المحتوى الرئيسي */
+        #content { display: none; opacity: 0; transition: 2.5s; padding: 20px; padding-bottom: 80px; }
+        
+        .story-section { max-width: 500px; margin: 50px auto; padding: 10px; opacity: 0; transform: translateY(30px); transition: 1s; }
+        .story-section.visible { opacity: 1; transform: translateY(0); }
+        
+        .img-frame { 
+            border: 6px solid rgba(255,255,255,0.1); border-radius: 25px; 
+            overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.6); margin-bottom: 20px;
+        }
+        .img-frame img { width: 100%; display: block; }
+        
+        h1 { font-family: 'Amiri', serif; color: var(--p); font-size: 2.5em; margin: 30px 0; }
+        .date-tag { background: var(--p); color: white; padding: 5px 15px; border-radius: 50px; font-size: 0.9em; display: inline-block; margin-bottom: 10px; }
+        p { font-size: 1.1em; line-height: 1.6; color: #e0e0e0; }
+
+        .heart { position: fixed; color: var(--p); z-index: -1; animation: fly linear infinite; }
+        @keyframes fly { to { transform: translateY(110vh) rotate(360deg); } }
+        
+        #music-container { position: absolute; left: -9999px; }
     </style>
 </head>
 <body>
 
-    <div class="card" id="lock">
-        <h2>أهلاً يا نونتي ❤️</h2>
-        <p>عشان تشوفي المفاجأة، اكتبي كلمة السر اللي بينا..</p>
-        <input type="text" id="pass" placeholder="اكتبي الكلمة هنا..">
-        <br>
-        <button onclick="check()">فتح ❤️</button>
+    <div id="music-container">
+        <iframe id="youtube-player" width="1" height="1" src="https://www.youtube.com/embed/xMQieNosdII?enablejsapi=1" frameborder="0" allow="autoplay"></iframe>
     </div>
 
-    <div id="message" class="card">
-        <h1>بحبك يا أغلى نونتي! ❤️</h1>
-        <p>الموقع ده بسيط بس هو مساحتنا الخاصة، بيفكرني بكل ثانية حلوة معاكي.</p>
-        <p style="color: #ff4d6d; font-weight: bold;">ربنا يخليكي ليا يا روحي!</p>
+    <div id="lock">
+        <div class="login-card">
+            <h2 style="color: var(--p)">أهلاً يا نونتي ❤️</h2>
+            <p>الموقع ده شايل حكايتنا.. اكتبي الكلمة اللي بينا عشان تشوفيها</p>
+            <input type="password" id="pass" placeholder="كلمة السر...">
+            <br>
+            <button onclick="unlock()">افتحي قلبي ❤️</button>
+        </div>
+    </div>
+
+    <div id="content">
+        <h1>حكايتنا في صور ❤️</h1>
+
+        <div class="story-section">
+            <span class="date-tag">21 November 2024</span>
+            <div class="img-frame"><img src="nona.1.png"></div>
+            <p>أول يوم اتكلمنا فيه.. "إنت اللي خدت قلبي من الزمان ومن اللي فيه".</p>
+        </div>
+
+        <div class="story-section">
+            <div class="img-frame"><img src="nona.2.png"></div>
+            <p>من غيرك الدنيا كانت ضلمة.. وإنتي اللي جيتي نورتي حياتي كلها.</p>
+        </div>
+
+        <div class="story-section">
+            <span class="date-tag">20 April 2026</span>
+            <div class="img-frame"><img src="nona.3.jpg"></div>
+            <p>أجمل يوم وأول خروجة لينا.. "أحلى عمر أنا عشته جنبك والحنان عندك كتير".</p>
+        </div>
+
+        <div class="story-section" style="padding: 40px;">
+            <p style="font-size: 1.5em; color: var(--p); font-family: 'Amiri', serif; font-weight: bold;">
+                هفضل يا حبيبتي معاكي.. وهعيش وأموت بهواكي يا نونتي! ❤️
+            </p>
+        </div>
     </div>
 
     <script>
-        function check() {
-            const val = document.getElementById('pass').value;
-            // كلمة السر هي love
-            if(val.toLowerCase() === "love") {
-                document.getElementById('lock').style.display = 'none';
-                const msg = document.getElementById('message');
-                msg.style.display = 'block';
-                setTimeout(() => { msg.style.opacity = '1'; }, 100);
-                startHearts();
-            } else {
-                alert("الباسوورد غلط يا قلبي، حاولي تاني! 😂");
-            }
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        var player;
+        function onYouTubeIframeAPIReady() { player = new YT.Player('youtube-player'); }
+
+        function unlock() {
+            if(document.getElementById('pass').value.toLowerCase() === 'love') {
+                if (player && player.playVideo) { player.playVideo(); }
+                document.getElementById('lock').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('lock').style.display = 'none';
+                    document.getElementById('content').style.display = 'block';
+                    setTimeout(() => {
+                        document.getElementById('content').style.opacity = '1';
+                        showSections();
+                        startHearts();
+                    }, 100);
+                }, 1500);
+            } else { alert("الباسوورد غلط يا نونتي! 😂"); }
+        }
+
+        function showSections() {
+            const sections = document.querySelectorAll('.story-section');
+            sections.forEach((s, i) => {
+                setTimeout(() => s.classList.add('visible'), i * 800);
+            });
         }
 
         function startHearts() {
             setInterval(() => {
-                const heart = document.createElement('div');
-                heart.innerHTML = '❤️';
-                heart.className = 'heart';
-                heart.style.left = Math.random() * 100 + 'vw';
-                heart.style.top = '-5vh';
-                heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                document.body.appendChild(heart);
-                setTimeout(() => { heart.remove(); }, 5000);
+                const h = document.createElement('div');
+                h.innerHTML = '❤️'; h.className = 'heart';
+                h.style.left = Math.random() * 100 + 'vw';
+                h.style.top = '-5vh';
+                h.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                h.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                document.body.appendChild(h);
+                setTimeout(() => h.remove(), 6000);
             }, 300);
         }
     </script>
