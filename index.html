@@ -22,15 +22,23 @@
             padding: 15px; border-radius: 12px; border: none; width: 80%; 
             margin: 20px 0; text-align: center; font-size: 18px; background: rgba(255,255,255,0.9); color: #000;
         }
-        button { 
+        .main-btn { 
             padding: 12px 40px; border-radius: 12px; background: var(--p); 
             color: white; border: none; cursor: pointer; font-weight: bold; transition: 0.3s;
         }
-        button:hover { transform: scale(1.1); box-shadow: 0 0 20px var(--p); }
+        .main-btn:hover { transform: scale(1.1); box-shadow: 0 0 20px var(--p); }
 
         /* المحتوى الرئيسي */
         #content { display: none; opacity: 0; transition: 2.5s; padding: 20px; padding-bottom: 80px; }
         
+        /* بنك الرسايل */
+        .msg-container {
+            max-width: 500px; margin: 20px auto; background: rgba(255, 77, 109, 0.05);
+            border: 2px dashed var(--p); border-radius: 20px; padding: 25px;
+            box-shadow: 0 0 15px rgba(255, 77, 109, 0.2);
+        }
+        #random-msg { font-size: 1.3em; font-weight: bold; min-height: 60px; display: flex; align-items: center; justify-content: center; transition: 0.5s; margin-bottom: 15px; }
+
         .story-section { max-width: 500px; margin: 50px auto; padding: 10px; opacity: 0; transform: translateY(30px); transition: 1s; }
         .story-section.visible { opacity: 1; transform: translateY(0); }
         
@@ -62,12 +70,17 @@
             <p>الموقع ده شايل حكايتنا.. اكتبي الكلمة اللي بينا عشان تشوفيها</p>
             <input type="password" id="pass" placeholder="كلمة السر...">
             <br>
-            <button onclick="unlock()">افتحي قلبي ❤️</button>
+            <button class="main-btn" onclick="unlock()">افتحي قلبي ❤️</button>
         </div>
     </div>
 
     <div id="content">
         <h1>حكايتنا في صور ❤️</h1>
+
+        <div class="msg-container">
+            <div id="random-msg">إنتي أجمل حاجة حصلتلي في عمري كله.. ❤️</div>
+            <button class="main-btn" onclick="showMsg()" style="background: white; color: var(--p); border: 2px solid var(--p);">كلمة ليكي من قلبي ✨</button>
+        </div>
 
         <div class="story-section">
             <span class="date-tag">21 November 2024</span>
@@ -94,6 +107,70 @@
     </div>
 
     <script>
+        // بنك الـ 50 رسالة حب لـ نونتي
+        const messages = [
+            "نونتي، انتي أجمل صدفة غيرت مجرى حياتي ❤️",
+            "كل ثانية معاكي هي رزق بجد من ربنا ✨",
+            "ضحكتك هي اللي بتهون عليا أي تعب في يومي 😍",
+            "انتي البيت الكبير اللي بيلمني وبيريح قلبي 🏠",
+            "يا رب نفضل سوا لآخر العمر ونبني كل أحلامنا سوا 💍",
+            "بحبك النهاردة أكتر من امبارح، وبكرة أكتر بكتير 💖",
+            "انتي الأميرة اللي ملكت قلبي من أول نظرة 👑",
+            "وجودك في حياتي هو اللي مديها طعم ومعنى بجد 🌸",
+            "إنتي مش بس خطيبتي، إنتي روحي وسندي وكل دنيتي ❤️",
+            "أجمل يوم في حياتي هو اليوم اللي عرفتك فيه ✨",
+            "نفسي أفضل جنبك طول العمر وأكون سبب فرحتك دايماً 😍",
+            "انتي النور اللي نور حياتي بعد ما كانت ضلمة 🕯️",
+            "لو لفيت الدنيا كلها مش هلاقي حد في حنيتك يا نونتي ❤️",
+            "بحب تفاصيلك، كلامك، وحتى زعلك مني بعشقه 🎀",
+            "ربنا يباركلي فيكي ويخليكي ليا يا أغلى من عيني 🤲",
+            "انتي النسخة الوحيدة اللي قلبي اختارها من وسط الملايين 💖",
+            "كلمة 'بحبك' قليلة جداً على اللي حاسه ناحيتك يا روحي ❤️",
+            "انتي سري الحلو وفرحتي اللي بدعي ربنا تدوم دايماً ✨",
+            "كل يوم معاكي هو بداية جديدة لقصة حبنا العظيمة 😍",
+            "نفسي أشوفك بالفستان الأبيض ونمشي سوا لأخر العمر 👰",
+            "إنتي أجمل هدية ربنا بعتهالي في الوقت الصح ❤️",
+            "عيونك فيها سحر بيخليني أنسى الدنيا وما فيها 👁️✨",
+            "حبك في قلبي بيزيد مع كل دقة، انتي النفس اللي بتنفسه 💖",
+            "انتي أغلى حاجة عندي، ومستعد أعمل أي حاجة عشان أشوفك مبسوطة 😊",
+            "يا نونتي، انتي الضحكة اللي بتطلع من القلب بجد ❤️",
+            "معاكي بحس إني ملكت الدنيا كلها في إيدي 🌍✨",
+            "انتي حلمي اللي اتحقق، وأجمل حقيقة بعيشها كل يوم 😍",
+            "نفسي أكون ليكي الزوج والأب والأخ والصديق وكل حاجة ❤️",
+            "حبك هو الطاقة اللي بتخليني أكمل وأنجح في حياتي 🚀",
+            "انتي السند اللي بجد، والكتف اللي بسند عليه وبطمن 💖",
+            "يا رب يجمعنا في بيت واحد قريب جداً يا أميرتي 🏠❤️",
+            "كل كلمة حب كتبتها ليكي هي طالعة من نص قلبي بجد ✨",
+            "انتي اللي خلتيني أعرف يعني إيه حب حقيقي وتضحية ❤️",
+            "بحب خناقاتنا الصغيرة عشان الصلح بعدها بيبقى أجمل 😅💖",
+            "انتي النعمة اللي بشكر ربنا عليها كل يوم في صلاتي 🤲",
+            "يا نونتي، انتي ملكة قلبي ومتربعة على عرشه للأبد 👑❤️",
+            "لو بإيدي أهديكي عمري كله مش هيغلى عليكي والله ✨",
+            "انتي اللي بتخلي الأيام الصعبة تعدي بسهولة بوجودك جنبي 😍",
+            "بحبك يا نونتي حب ملوش نهاية ولا حدود 💖∞",
+            "انتي البطلة في كل قصة حلوة بحلم بيها لمستقبلنا ❤️",
+            "صوتك هو المزيكا اللي برتاح لما بسمعها في عز تعبي 🎶✨",
+            "يا نونتي، انتي قطعة من الجنة ماشية على الأرض ❤️",
+            "نفسي نكبر سوا ونحكي حكايتنا لأولادنا في المستقبل 👨‍👩‍👧‍👦💖",
+            "انتي القلب اللي بيحتويني في كل حالاتي، بحبك جداً ❤️",
+            "يا رب يحفظك من كل شر ويخليكي ليا دايماً منورة حياتي 🤲✨",
+            "انتي الفرحة اللي كنت بدور عليها ولقيتها فيكي يا روحي 😍",
+            "بحبك يا أرق وأجمل بنوتة شافتها عيني في الكون كله ❤️",
+            "نونتي، انتي كفاية عليا من الدنيا دي كلها والله 💖✨",
+            "كل سنة وإنتي حبيبتي وخطيبتي وبنت قلبي للأبد ❤️",
+            "هفضل أحبك لآخر نفس في عمري.. وعد عليا يا نونتي 💍❤️"
+        ];
+
+        function showMsg() {
+            const msgBox = document.getElementById('random-msg');
+            msgBox.style.opacity = '0';
+            setTimeout(() => {
+                const random = messages[Math.floor(Math.random() * messages.length)];
+                msgBox.innerText = random;
+                msgBox.style.opacity = '1';
+            }, 300);
+        }
+
         var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
