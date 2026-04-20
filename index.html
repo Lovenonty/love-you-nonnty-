@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أحبك يا نونتي ❤️</title>
+    <style>
+        body { background-color: #0b090a; color: white; font-family: 'Segoe UI', Tahoma, sans-serif; text-align: center; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        .card { background: rgba(255, 255, 255, 0.1); padding: 40px; border-radius: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); width: 85%; max-width: 400px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); transition: 0.5s; position: relative; z-index: 10; }
+        h2 { color: #ff4d6d; }
+        input { padding: 12px; border-radius: 10px; border: none; margin-top: 15px; width: 90%; text-align: center; font-size: 16px; outline: none; background: white; color: black; }
+        button { margin-top: 20px; padding: 12px 40px; border-radius: 10px; background: #ff4d6d; color: white; border: none; cursor: pointer; font-weight: bold; font-size: 18px; transition: 0.3s; }
+        button:hover { background: #ff758f; transform: scale(1.05); }
+        #message { display: none; opacity: 0; transition: 1s; }
+        .heart { position: absolute; color: #ff4d6d; font-size: 20px; z-index: 1; animation: fall linear infinite; }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div class="card" id="lock">
+        <h2>أهلاً يا نونتي ❤️</h2>
+        <p>عشان تشوفي المفاجأة، اكتبي كلمة السر اللي بينا..</p>
+        <input type="text" id="pass" placeholder="اكتبي الكلمة هنا..">
+        <br>
+        <button onclick="check()">فتح ❤️</button>
+    </div>
+
+    <div id="message" class="card">
+        <h1>بحبك يا أغلى نونتي! ❤️</h1>
+        <p>الموقع ده بسيط بس هو مساحتنا الخاصة، بيفكرني بكل ثانية حلوة معاكي.</p>
+        <p style="color: #ff4d6d; font-weight: bold;">ربنا يخليكي ليا يا روحي!</p>
+    </div>
+
+    <script>
+        function check() {
+            const val = document.getElementById('pass').value;
+            // كلمة السر هي love
+            if(val.toLowerCase() === "love") {
+                document.getElementById('lock').style.display = 'none';
+                const msg = document.getElementById('message');
+                msg.style.display = 'block';
+                setTimeout(() => { msg.style.opacity = '1'; }, 100);
+                startHearts();
+            } else {
+                alert("الباسوورد غلط يا قلبي، حاولي تاني! 😂");
+            }
+        }
+
+        function startHearts() {
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.innerHTML = '❤️';
+                heart.className = 'heart';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.top = '-5vh';
+                heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                document.body.appendChild(heart);
+                setTimeout(() => { heart.remove(); }, 5000);
+            }, 300);
+        }
+    </script>
+</body>
+</html>
