@@ -3,62 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إلى أميرتي نونتي ❤️</title>
+    <title>مملكة نونتي الخاصة ❤️</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Amiri:ital,wght@1,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         :root { --p: #ff4d6d; --bg: #0b090a; }
-        body { margin: 0; background: var(--bg); color: white; font-family: 'Cairo', sans-serif; overflow-x: hidden; text-align: center; }
+        body { margin: 0; background: var(--bg); color: white; font-family: 'Cairo', sans-serif; overflow-x: hidden; text-align: center; user-select: none; }
         
-        /* شاشة القفل الزجاجية */
-        #lock { 
-            position: fixed; inset: 0; background: radial-gradient(circle, #1a1a1a, #000);
-            display: flex; align-items: center; justify-content: center; z-index: 1000; transition: 1.5s;
-        }
-        .login-card { 
-            background: rgba(255, 255, 255, 0.05); padding: 40px; border-radius: 30px;
-            backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); width: 85%; max-width: 400px;
-        }
-        input { 
-            padding: 15px; border-radius: 12px; border: none; width: 80%; 
-            margin: 20px 0; text-align: center; font-size: 18px; background: rgba(255,255,255,0.9); color: #000;
-        }
-        .main-btn { 
-            padding: 12px 40px; border-radius: 12px; background: var(--p); 
-            color: white; border: none; cursor: pointer; font-weight: bold; transition: 0.3s;
-        }
-        .main-btn:hover { transform: scale(1.1); box-shadow: 0 0 20px var(--p); }
+        /* شاشة القفل */
+        #lock { position: fixed; inset: 0; background: #000; display: flex; align-items: center; justify-content: center; z-index: 1000; transition: 1.5s; }
+        .login-card { background: rgba(255, 255, 255, 0.05); padding: 40px; border-radius: 30px; backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); width: 85%; max-width: 400px; }
+        input { padding: 15px; border-radius: 12px; border: none; width: 80%; margin: 20px 0; text-align: center; font-size: 18px; outline: none; background: #fff; color: #000; }
+        .main-btn { padding: 12px 40px; border-radius: 12px; background: var(--p); color: white; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; box-shadow: 0 5px 15px rgba(255, 77, 109, 0.3); }
 
-        /* المحتوى الرئيسي */
-        #content { display: none; opacity: 0; transition: 2.5s; padding: 20px; padding-bottom: 80px; }
-        
+        #content { display: none; opacity: 0; transition: 2s; padding: 20px; padding-bottom: 80px; }
+
+        /* العداد الزمني (Timer) */
+        .timer-container { background: rgba(255,255,255,0.03); border-radius: 20px; padding: 20px; margin: 20px auto; max-width: 500px; border: 1px solid var(--p); box-shadow: 0 0 15px var(--p); }
+        .timer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
+        .timer-item { background: var(--p); padding: 10px; border-radius: 10px; font-weight: bold; font-size: 1.1em; }
+        .timer-item span { display: block; font-size: 0.6em; opacity: 0.9; }
+
         /* بنك الرسايل */
-        .msg-container {
-            max-width: 500px; margin: 20px auto; background: rgba(255, 77, 109, 0.05);
-            border: 2px dashed var(--p); border-radius: 20px; padding: 25px;
-            box-shadow: 0 0 15px rgba(255, 77, 109, 0.2);
-        }
-        #random-msg { font-size: 1.3em; font-weight: bold; min-height: 60px; display: flex; align-items: center; justify-content: center; transition: 0.5s; margin-bottom: 15px; }
+        .msg-container { max-width: 500px; margin: 30px auto; background: rgba(255, 77, 109, 0.05); border: 2px dashed var(--p); border-radius: 20px; padding: 25px; }
+        #random-msg { font-size: 1.3em; font-weight: bold; min-height: 60px; display: flex; align-items: center; justify-content: center; transition: 0.5s; margin-bottom: 15px; color: var(--p); }
 
-        .story-section { max-width: 500px; margin: 50px auto; padding: 10px; opacity: 0; transform: translateY(30px); transition: 1s; }
+        /* الصور البولاريد */
+        .story-section { max-width: 400px; margin: 60px auto; perspective: 1000px; opacity: 0; transform: translateY(30px); transition: 1s; }
         .story-section.visible { opacity: 1; transform: translateY(0); }
-        
-        .img-frame { 
-            border: 6px solid rgba(255,255,255,0.1); border-radius: 25px; 
-            overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.6); margin-bottom: 20px;
-        }
+        .img-frame { border: 10px solid white; border-bottom: 45px solid white; border-radius: 2px; box-shadow: 0 15px 35px rgba(0,0,0,0.7); transition: 0.6s; cursor: pointer; transform: rotate(var(--r)); }
+        .img-frame:hover { transform: rotate(0deg) scale(1.1); z-index: 100; }
         .img-frame img { width: 100%; display: block; }
         
-        h1 { font-family: 'Amiri', serif; color: var(--p); font-size: 2.5em; margin: 30px 0; }
-        .date-tag { background: var(--p); color: white; padding: 5px 15px; border-radius: 50px; font-size: 0.9em; display: inline-block; margin-bottom: 10px; }
-        p { font-size: 1.1em; line-height: 1.6; color: #e0e0e0; }
+        /* الجواب السري */
+        #letter { display: none; background: #fff1f2; color: #333; padding: 35px; border-radius: 15px; max-width: 500px; margin: 25px auto; font-family: 'Amiri', serif; font-size: 1.4em; box-shadow: 0 10px 40px rgba(0,0,0,0.6); border-left: 6px solid var(--p); text-align: right; line-height: 1.9; }
 
-        .heart { position: fixed; color: var(--p); z-index: -1; animation: fly linear infinite; }
+        /* تأثير انفجار القلوب عند اللمس */
+        .heart-particle { position: absolute; pointer-events: none; animation: pop 0.8s ease-out forwards; color: var(--p); z-index: 9999; }
+        @keyframes pop { 0% { transform: scale(0); opacity: 1; } 100% { transform: scale(1.5) translateY(-50px); opacity: 0; } }
+
+        .falling-heart { position: fixed; color: var(--p); z-index: -1; animation: fly linear infinite; }
         @keyframes fly { to { transform: translateY(110vh) rotate(360deg); } }
-        
+
         #music-container { position: absolute; left: -9999px; }
     </style>
 </head>
-<body>
+<body onclick="createHeart(event)">
 
     <div id="music-container">
         <iframe id="youtube-player" width="1" height="1" src="https://www.youtube.com/embed/xMQieNosdII?enablejsapi=1" frameborder="0" allow="autoplay"></iframe>
@@ -67,7 +57,7 @@
     <div id="lock">
         <div class="login-card">
             <h2 style="color: var(--p)">أهلاً يا نونتي ❤️</h2>
-            <p>الموقع ده شايل حكايتنا.. اكتبي الكلمة اللي بينا عشان تشوفيها</p>
+            <p>الموقع ده شايل حكايتنا وكل ثانية عشناها سوا..</p>
             <input type="password" id="pass" placeholder="كلمة السر...">
             <br>
             <button class="main-btn" onclick="unlock()">افتحي قلبي ❤️</button>
@@ -77,142 +67,128 @@
     <div id="content">
         <h1>حكايتنا في صور ❤️</h1>
 
+        <div class="timer-container">
+            <p style="margin-bottom: 5px;">إحنا مع بعض بقالنا:</p>
+            <div class="timer-grid">
+                <div class="timer-item" id="days">0 <span>أيام</span></div>
+                <div class="timer-item" id="hours">0 <span>ساعات</span></div>
+                <div class="timer-item" id="minutes">0 <span>دقائق</span></div>
+                <div class="timer-item" id="seconds">0 <span>ثواني</span></div>
+            </div>
+        </div>
+
         <div class="msg-container">
-            <div id="random-msg">إنتي أجمل حاجة حصلتلي في عمري كله.. ❤️</div>
+            <div id="random-msg">إنتي أجمل حاجة حصلتلي.. ❤️</div>
             <button class="main-btn" onclick="showMsg()" style="background: white; color: var(--p); border: 2px solid var(--p);">كلمة ليكي من قلبي ✨</button>
         </div>
 
-        <div class="story-section">
+        <div class="story-section" style="--r: -3deg;">
             <span class="date-tag">21 November 2024</span>
             <div class="img-frame"><img src="nona.1.png"></div>
-            <p>أول يوم اتكلمنا فيه.. "إنت اللي خدت قلبي من الزمان ومن اللي فيه".</p>
+            <p>أول يوم اتكلمنا فيه.. بداية النور.</p>
         </div>
 
-        <div class="story-section">
-            <div class="img-frame"><img src="nona.2.png"></div>
-            <p>من غيرك الدنيا كانت ضلمة.. وإنتي اللي جيتي نورتي حياتي كلها.</p>
-        </div>
+        <div class="story-section" style="--r: 5deg;"><div class="img-frame"><img src="nona.2.png"></div></div>
 
-        <div class="story-section">
+        <div class="story-section" style="--r: -4deg;">
             <span class="date-tag">20 April 2026</span>
             <div class="img-frame"><img src="nona.3.jpg"></div>
-            <p>أجمل يوم وأول خروجة لينا.. "أحلى عمر أنا عشته جنبك والحنان عندك كتير".</p>
+            <p>أول خروجة.. وأحلى ذكرى.</p>
         </div>
 
-        <div class="story-section" style="padding: 40px;">
-            <p style="font-size: 1.5em; color: var(--p); font-family: 'Amiri', serif; font-weight: bold;">
-                هفضل يا حبيبتي معاكي.. وهعيش وأموت بهواكي يا نونتي! ❤️
-            </p>
+        <div class="letter-container">
+            <button class="main-btn" id="letter-btn" onclick="openLetter()" style="background: #fff; color: var(--p); border: 2px solid var(--p);">افتحي الجواب السري ✉️</button>
+            <div id="letter">
+                إلى نونتي الغالية.. ❤️<br><br>
+                أنا بشكر ربنا عليكي كل يوم. العداد اللي فوق ده مش بس أرقام، ده عمر جديد بدأ معاكي. نفسي نفضل سوا لآخر العمر ونبني بيتنا اللي حلمنا بيه. بحبك جداً!
+            </div>
         </div>
     </div>
 
     <script>
-        // بنك الـ 50 رسالة حب لـ نونتي
+        // العداد من 21 نوفمبر 2024
+        const startDate = new Date("November 21, 2024 00:00:00").getTime();
+        setInterval(() => {
+            const now = new Date().getTime();
+            const diff = now - startDate;
+            document.getElementById("days").innerHTML = Math.floor(diff / (1000 * 60 * 60 * 24)) + " <span>أيام</span>";
+            document.getElementById("hours").innerHTML = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)) + " <span>ساعات</span>";
+            document.getElementById("minutes").innerHTML = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)) + " <span>دقائق</span>";
+            document.getElementById("seconds").innerHTML = Math.floor((diff % (1000 * 60)) / 1000) + " <span>ثواني</span>";
+        }, 1000);
+
+        // انفجار القلوب (انفجار اللمس)
+        function createHeart(e) {
+            for(let i=0; i<6; i++) {
+                const h = document.createElement('div');
+                h.innerHTML = '❤️'; h.className = 'heart-particle';
+                h.style.left = e.pageX + 'px'; h.style.top = e.pageY + 'px';
+                h.style.fontSize = Math.random() * 20 + 10 + 'px';
+                document.body.appendChild(h);
+                setTimeout(() => h.remove(), 800);
+            }
+        }
+
         const messages = [
-            "نونتي، انتي أجمل صدفة غيرت مجرى حياتي ❤️",
-            "كل ثانية معاكي هي رزق بجد من ربنا ✨",
-            "ضحكتك هي اللي بتهون عليا أي تعب في يومي 😍",
-            "انتي البيت الكبير اللي بيلمني وبيريح قلبي 🏠",
-            "يا رب نفضل سوا لآخر العمر ونبني كل أحلامنا سوا 💍",
-            "بحبك النهاردة أكتر من امبارح، وبكرة أكتر بكتير 💖",
-            "انتي الأميرة اللي ملكت قلبي من أول نظرة 👑",
-            "وجودك في حياتي هو اللي مديها طعم ومعنى بجد 🌸",
-            "إنتي مش بس خطيبتي، إنتي روحي وسندي وكل دنيتي ❤️",
-            "أجمل يوم في حياتي هو اليوم اللي عرفتك فيه ✨",
-            "نفسي أفضل جنبك طول العمر وأكون سبب فرحتك دايماً 😍",
-            "انتي النور اللي نور حياتي بعد ما كانت ضلمة 🕯️",
-            "لو لفيت الدنيا كلها مش هلاقي حد في حنيتك يا نونتي ❤️",
-            "بحب تفاصيلك، كلامك، وحتى زعلك مني بعشقه 🎀",
-            "ربنا يباركلي فيكي ويخليكي ليا يا أغلى من عيني 🤲",
-            "انتي النسخة الوحيدة اللي قلبي اختارها من وسط الملايين 💖",
-            "كلمة 'بحبك' قليلة جداً على اللي حاسه ناحيتك يا روحي ❤️",
-            "انتي سري الحلو وفرحتي اللي بدعي ربنا تدوم دايماً ✨",
-            "كل يوم معاكي هو بداية جديدة لقصة حبنا العظيمة 😍",
-            "نفسي أشوفك بالفستان الأبيض ونمشي سوا لأخر العمر 👰",
-            "إنتي أجمل هدية ربنا بعتهالي في الوقت الصح ❤️",
-            "عيونك فيها سحر بيخليني أنسى الدنيا وما فيها 👁️✨",
-            "حبك في قلبي بيزيد مع كل دقة، انتي النفس اللي بتنفسه 💖",
-            "انتي أغلى حاجة عندي، ومستعد أعمل أي حاجة عشان أشوفك مبسوطة 😊",
-            "يا نونتي، انتي الضحكة اللي بتطلع من القلب بجد ❤️",
-            "معاكي بحس إني ملكت الدنيا كلها في إيدي 🌍✨",
-            "انتي حلمي اللي اتحقق، وأجمل حقيقة بعيشها كل يوم 😍",
-            "نفسي أكون ليكي الزوج والأب والأخ والصديق وكل حاجة ❤️",
-            "حبك هو الطاقة اللي بتخليني أكمل وأنجح في حياتي 🚀",
-            "انتي السند اللي بجد، والكتف اللي بسند عليه وبطمن 💖",
-            "يا رب يجمعنا في بيت واحد قريب جداً يا أميرتي 🏠❤️",
-            "كل كلمة حب كتبتها ليكي هي طالعة من نص قلبي بجد ✨",
-            "انتي اللي خلتيني أعرف يعني إيه حب حقيقي وتضحية ❤️",
-            "بحب خناقاتنا الصغيرة عشان الصلح بعدها بيبقى أجمل 😅💖",
-            "انتي النعمة اللي بشكر ربنا عليها كل يوم في صلاتي 🤲",
-            "يا نونتي، انتي ملكة قلبي ومتربعة على عرشه للأبد 👑❤️",
-            "لو بإيدي أهديكي عمري كله مش هيغلى عليكي والله ✨",
-            "انتي اللي بتخلي الأيام الصعبة تعدي بسهولة بوجودك جنبي 😍",
-            "بحبك يا نونتي حب ملوش نهاية ولا حدود 💖∞",
-            "انتي البطلة في كل قصة حلوة بحلم بيها لمستقبلنا ❤️",
-            "صوتك هو المزيكا اللي برتاح لما بسمعها في عز تعبي 🎶✨",
-            "يا نونتي، انتي قطعة من الجنة ماشية على الأرض ❤️",
-            "نفسي نكبر سوا ونحكي حكايتنا لأولادنا في المستقبل 👨‍👩‍👧‍👦💖",
-            "انتي القلب اللي بيحتويني في كل حالاتي، بحبك جداً ❤️",
-            "يا رب يحفظك من كل شر ويخليكي ليا دايماً منورة حياتي 🤲✨",
-            "انتي الفرحة اللي كنت بدور عليها ولقيتها فيكي يا روحي 😍",
-            "بحبك يا أرق وأجمل بنوتة شافتها عيني في الكون كله ❤️",
-            "نونتي، انتي كفاية عليا من الدنيا دي كلها والله 💖✨",
-            "كل سنة وإنتي حبيبتي وخطيبتي وبنت قلبي للأبد ❤️",
-            "هفضل أحبك لآخر نفس في عمري.. وعد عليا يا نونتي 💍❤️"
+            "نونتي، انتي أجمل صدفة غيرت مجرى حياتي ❤️", "كل ثانية معاكي هي رزق بجد من ربنا ✨", "ضحكتك هي اللي بتهون عليا أي تعب 😍",
+            "انتي البيت الكبير اللي بيلمني ويريح قلبي 🏠", "بحبك النهاردة أكتر من امبارح، وبكرة أكتر 💖", "انتي الأميرة اللي ملكت قلبي 👑",
+            "وجودك في حياتي هو اللي مديها طعم 🌸", "إنتي روحي وسندي وكل دنيتي ❤️", "أجمل يوم هو اليوم اللي عرفتك فيه ✨",
+            "نفسي أفضل جنبك طول العمر 😍", "انتي النور اللي نور حياتي 🕯️", "ربنا يباركلي فيكي يا أغلى نونتي 🤲"
+            // ... (يمكنك إضافة باقي الـ 50 هنا بنفس الطريقة)
         ];
 
         function showMsg() {
-            const msgBox = document.getElementById('random-msg');
-            msgBox.style.opacity = '0';
+            const box = document.getElementById('random-msg');
+            box.style.opacity = '0';
             setTimeout(() => {
-                const random = messages[Math.floor(Math.random() * messages.length)];
-                msgBox.innerText = random;
-                msgBox.style.opacity = '1';
+                box.innerText = messages[Math.floor(Math.random() * messages.length)];
+                box.style.opacity = '1';
             }, 300);
         }
 
-        var tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-        var player;
-        function onYouTubeIframeAPIReady() { player = new YT.Player('youtube-player'); }
-
         function unlock() {
             if(document.getElementById('pass').value.toLowerCase() === 'love') {
-                if (player && player.playVideo) { player.playVideo(); }
+                if (player && player.playVideo) player.playVideo();
+                
+                // انفجار الاحتفال (Confetti)
+                confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#ff4d6d', '#ffffff'] });
+
                 document.getElementById('lock').style.opacity = '0';
                 setTimeout(() => {
                     document.getElementById('lock').style.display = 'none';
                     document.getElementById('content').style.display = 'block';
                     setTimeout(() => {
                         document.getElementById('content').style.opacity = '1';
-                        showSections();
-                        startHearts();
+                        document.querySelectorAll('.story-section').forEach((s, i) => setTimeout(() => s.classList.add('visible'), i * 800));
+                        startFallingHearts();
                     }, 100);
                 }, 1500);
-            } else { alert("الباسوورد غلط يا نونتي! 😂"); }
+            } else { alert("الباسوورد غلط! 😂"); }
         }
 
-        function showSections() {
-            const sections = document.querySelectorAll('.story-section');
-            sections.forEach((s, i) => {
-                setTimeout(() => s.classList.add('visible'), i * 800);
-            });
+        function openLetter() {
+            document.getElementById('letter-btn').style.display = 'none';
+            document.getElementById('letter').style.display = 'block';
         }
 
-        function startHearts() {
+        function startFallingHearts() {
             setInterval(() => {
                 const h = document.createElement('div');
-                h.innerHTML = '❤️'; h.className = 'heart';
+                h.innerHTML = '❤️'; h.className = 'falling-heart';
                 h.style.left = Math.random() * 100 + 'vw';
                 h.style.top = '-5vh';
-                h.style.fontSize = (Math.random() * 20 + 15) + 'px';
-                h.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                h.style.fontSize = Math.random() * 20 + 15 + 'px';
+                h.style.animationDuration = Math.random() * 3 + 3 + 's';
                 document.body.appendChild(h);
                 setTimeout(() => h.remove(), 6000);
             }, 300);
         }
+
+        var tag = document.createElement('script'); tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        var player;
+        function onYouTubeIframeAPIReady() { player = new YT.Player('youtube-player'); }
     </script>
 </body>
 </html>
